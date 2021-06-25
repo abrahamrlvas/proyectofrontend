@@ -3,10 +3,11 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const cors = require('cors');
 const database = require('./settings/databaseConnection');
+const authRoute = require('./routes/auth.routes');
 
-dotenv.config()
+dotenv.config();
 const app = express();
-const port = process.env.PORT || 4000
+const port = process.env.PORT || 4000;
 
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended: false}));
@@ -16,6 +17,8 @@ app.use(cors({
   methods: ['GET', 'POST', 'DELETE', 'PUT'],
   credentials: true
 }));
+
+app.use('/auth', authRoute);
 
 app.listen(port, async () => {
   try {
