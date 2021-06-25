@@ -1,0 +1,20 @@
+{
+  "name": "dah-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://Abrahamrlvas@bitbucket.org/Abrahamrlvas/dah-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/Abrahamrlvas/dah-backend#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
