@@ -4,7 +4,8 @@ const authController = require('../controllers/AuthController');
 const verifyToken = require('../helpers/verifyToken')
 
 router.get('/', verifyToken, (req, res)=> {
-  res.send('hola')
+  const user = req.user
+  res.json(user)
 })
 
 router.post('/register', authController.authRegister);
