@@ -1,6 +1,8 @@
 const Users = require('../models/userModels');
+const Role = require('../models/rolesModels');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { Op } = require('sequelize');
 
 class AuthController {
   async authRegister(req, res) {
@@ -15,8 +17,25 @@ class AuthController {
         email,
         password: hashPassword,
       })
-        .then((data) => {
-          res.status(200).json({ message: "Usuario registrado correctamente", data })
+        .then((user) => {
+          if (req.body.roles) {
+            Role.findAll({
+              where: {
+                name: {
+                  [Op.or]: req.body.roles
+                }
+              }
+            }).then(roles => {
+              user.setRoles(roles).then(() => {
+                res.send({ message: "User was registered successfully!" });
+              });
+            });
+          } else {
+            // user role = 1
+            user.setRoles([1]).then(() => {
+              res.send({ message: "User was registered successfully!" });
+            });
+          }
         })
         .catch((error) => {
           const res = { success: false, error: error };
@@ -48,8 +67,17 @@ class AuthController {
               }, process.env.AUTH_SECRET, {
                 expiresIn: process.env.AUTH_EXPIRE
               })
-              res.json({ user, token })
 
+              let authorities = [];
+              user.getRoles().then(roles => {
+                for (let i = 0; i < roles.length; i++) {
+                  authorities.push(roles[i].name);
+                }
+                res.status(200).send({
+                  roles: authorities,
+                  accessToken: token
+                });
+              });
 
             } else {
               res.status(201).json({ message: "Contraseña invalida", token })

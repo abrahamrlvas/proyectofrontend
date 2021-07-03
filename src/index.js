@@ -22,7 +22,9 @@ app.use('/auth', authRoute);
 
 app.listen(port, async () => {
   try {
-    await database.sync();
+    await database.sync().then(() => {
+      console.log('Drop and Resync Db')
+    });
     console.log('Server listening in port', port);
     console.log('Database is connected succesfully');
   } catch (error) {

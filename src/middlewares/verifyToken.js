@@ -9,10 +9,10 @@ const verifyToken = (req, res, next) => {
       if (error) {
         res.status(403).send('Invalid token')
       }else{
-        req.user = decoded.id;
+        req.user = decoded.userId;
+        next();
       }
     })
-    next();
   } else {
     res.status(403).send('No token provided!')
   }
