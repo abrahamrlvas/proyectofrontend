@@ -2,7 +2,7 @@ const Users = require('../models/userModels');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-class LoginController {
+class AuthController {
   async authRegister(req, res) {
     try {
       const { username, email, password } = req.body;
@@ -29,36 +29,40 @@ class LoginController {
 
   async authLogin(req, res) {
     let token = null;
-    const { username, password } = req.body;
-    await Users.findOne({
-      where: {
-        username: username,
-      },
-    })
-      .then((user) => {
-        if (!user) {
-          res.status(201).json({ message: "Email o contraseña invalida", token })
-        } else {
-          const comparePassword = bcrypt.compareSync(password, user.password)
-          if (comparePassword) {
-            token = jwt.sign({
-              userId: user.id,
-              email: user.email
-            }, process.env.AUTH_SECRET, {
-              expiresIn: process.env.AUTH_EXPIRE
-            })
-            res.json({ user, token })
-
-
-          } else {
-            res.status(201).json({ message: "Contraseña invalida", token })
-          }
-        }
+    try {
+      const { username, password } = req.body;
+      await Users.findOne({
+        where: {
+          username: username,
+        },
       })
-      .catch((err) => {
-        res.status(500).json(err);
-      });
+        .then((user) => {
+          if (!user) {
+            res.status(201).json({ message: "Email o contraseña invalida", token })
+          } else {
+            const comparePassword = bcrypt.compareSync(password, user.password)
+            if (comparePassword) {
+              token = jwt.sign({
+                userId: user.id,
+                email: user.email
+              }, process.env.AUTH_SECRET, {
+                expiresIn: process.env.AUTH_EXPIRE
+              })
+              res.json({ user, token })
+
+
+            } else {
+              res.status(201).json({ message: "Contraseña invalida", token })
+            }
+          }
+        })
+        .catch((err) => {
+          res.status(500).json(err);
+        });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 
-module.exports = new LoginController();
+module.exports = new AuthController();
