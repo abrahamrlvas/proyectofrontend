@@ -1,0 +1,23 @@
+### Registrarse
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+    "username": "test",
+    "password": "test",
+    "email": "test@gmail.com",
+    "roles": ["admin"]
+}
+
+### Loguearse
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "username": "test",
+    "password": "test"
+}
+
+### Prueba
+GET http://localhost:3000/auth/
+Content-Type: application/json
