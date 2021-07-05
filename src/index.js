@@ -3,10 +3,11 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const cors = require('cors');
 const database = require('./settings/databaseConnection');
+const authRoute = require('./routes/auth.routes');
 
-dotenv.config()
+dotenv.config();
 const app = express();
-const port = process.env.PORT || 4000
+const port = process.env.PORT || 4000;
 
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended: false}));
@@ -17,9 +18,13 @@ app.use(cors({
   credentials: true
 }));
 
+app.use('/auth', authRoute);
+
 app.listen(port, async () => {
   try {
-    await database.sync();
+    await database.sync().then(() => {
+      console.log('Drop and Resync Db')
+    });
     console.log('Server listening in port', port);
     console.log('Database is connected succesfully');
   } catch (error) {
