@@ -49,6 +49,11 @@ io.on('connection', socket => {
     console.log(data);
   });
 
+  socket.on('message', msg => {
+    console.log(msg);
+    socket.emit('message', msg)
+  })
+
   socket.on('disconnect', (reason) => {
     console.log('User disconnect');
   })
