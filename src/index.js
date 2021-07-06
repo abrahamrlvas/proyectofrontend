@@ -1,4 +1,5 @@
 const express = require('express');
+const socketIO = require('socket.io');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const cors = require('cors');
@@ -20,7 +21,7 @@ app.use(cors({
 
 app.use('/auth', authRoute);
 
-app.listen(port, async () => {
+const server = app.listen(port, async () => {
   try {
     await database.sync().then(() => {
       console.log('Drop and Resync Db')
@@ -31,3 +32,25 @@ app.listen(port, async () => {
     console.error('Something is wrong', error);
   }
 });
+
+const io = socketIO(server, {
+  cors: {
+    origin: "http://localhost:8080",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["my-custom-header"],
+    credentials: true
+  }
+});
+
+io.on('connection', socket => {
+  console.log('New connection');
+
+  socket.on('join', data => {
+    console.log(data);
+  });
+
+  socket.on('disconnect', (reason) => {
+    console.log('User disconnect');
+  })
+})
+
