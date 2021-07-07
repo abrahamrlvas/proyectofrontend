@@ -5,6 +5,8 @@ const morgan = require('morgan');
 const cors = require('cors');
 const database = require('./settings/databaseConnection');
 const authRoute = require('./routes/auth.routes');
+const Message = require('./models/chatModels');
+const randomString = require('randomstring');
 
 dotenv.config();
 const app = express();
@@ -49,9 +51,19 @@ io.on('connection', socket => {
     console.log(data);
   });
 
-  socket.on('message', msg => {
-    console.log(msg);
-    socket.emit('message', msg)
+  socket.on('message', (msg) => {
+    socket.on('user', async (user) => {
+      await Message.create({
+        id: randomString.generate(),
+        message: msg,
+        userId: user
+      }).then().catch(e => console.log(e))
+      socket.emit('message', msg)
+    })
+  })
+
+  socket.on('username', user => {
+    socket.emit('username', user)
   })
 
   socket.on('disconnect', (reason) => {

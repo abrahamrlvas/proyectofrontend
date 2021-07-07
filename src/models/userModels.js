@@ -1,6 +1,7 @@
 const Sequelize = require("sequelize");
 const db = require("../settings/databaseConnection");
 const Roles = require("./rolesModels");
+const Message = require("./chatModels");
 
 const Users = db.define("users", {
   id: {
@@ -30,5 +31,7 @@ Users.belongsToMany(Roles, {
   foreignKey: "userId",
   otherKey: "roleId"
 });
+
+Message.Users = Message.belongsTo(Users)
 
 module.exports = Users;
