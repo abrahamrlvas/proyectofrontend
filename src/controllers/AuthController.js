@@ -63,6 +63,7 @@ class AuthController {
             if (comparePassword) {
               token = jwt.sign({
                 userId: user.id,
+                username: user.username,
                 email: user.email
               }, process.env.AUTH_SECRET, {
                 expiresIn: process.env.AUTH_EXPIRE

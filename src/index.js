@@ -51,14 +51,15 @@ io.on('connection', socket => {
     console.log(data);
   });
 
-  socket.on('message', (msg) => {
+  socket.on('message', ({_value}) => {
+    console.log(_value);
     socket.on('user', async (user) => {
       await Message.create({
         id: randomString.generate(),
-        message: msg,
+        message: _value,
         userId: user
       }).then().catch(e => console.log(e))
-      socket.emit('message', msg)
+      socket.emit('message', _value)
     })
   })
 
