@@ -54,15 +54,15 @@ io.on('connection', (socket) => {
   });
   
   // Cambio nuevo
-  socket.on('message', ({msg, userId, username}) => {
+  socket.on('message', ({msg, userId, username, avatar}) => {
     Message.create({
       id: randomString.generate(),
       message: msg._value,
       userId,
       createdAt: new Date()
     }).then().catch(e => console.log(e))
-    socket.broadcast.emit('message', {msg: msg._value, user: username, createdAt: new Date()})
-    socket.emit('message', {msg: msg._value, user: username, createdAt: new Date()})
+    socket.broadcast.emit('message', {msg: msg._value, user: username, createdAt: new Date(), avatar})
+    socket.emit('message', {msg: msg._value, user: username, createdAt: new Date(), avatar})
   })
 
   socket.emit('userActive', io.engine.clientsCount)
