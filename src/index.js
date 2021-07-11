@@ -46,16 +46,14 @@ const io = socketIO(server, {
   }
 });
 
-io.on('connection', socket => {
+io.on('connection', (socket) => {
   console.log('New connection');
-
   socket.on('join', data => {
     console.log(data);
   });
   
   // Cambio nuevo
   socket.on('message', ({msg, userId, username}) => {
-    console.log(msg, userId);
     Message.create({
       id: randomString.generate(),
       message: msg._value,
@@ -65,6 +63,8 @@ io.on('connection', socket => {
     socket.broadcast.emit('message', {msg: msg._value, user: username})
     socket.emit('message', {msg: msg._value, user: username})
   })
+
+  socket.emit('userActive', io.engine.clientsCount)
 
   socket.on('disconnect', (reason) => {
     console.log('User disconnect');
