@@ -11,7 +11,6 @@ class AuthController {
       const { username, email, password } = req.body;
       let roles = JSON.parse(req.body.roles)
       console.log(req.body);
-
       if (await Users.findOne({ where: { username } })) {
         res.status(201).json({ message: `El usuario ${username} ya existe` })
       }
