@@ -9,10 +9,12 @@ class AuthController {
   async authRegister(req, res) {
     try {
       const { username, email, password } = req.body;
+      console.log(req.body);
       if (await Users.findOne({ where: { username } })) {
         res.status(201).json({ message: `El usuario ${username} ya existe` })
       }
       const filePath = `${randomString.generate()}/${req.file.filename}`
+      console.log(filePath);
       const hashPassword = await bcrypt.hash(password, 10);
       await Users.create({
         username,
