@@ -8,34 +8,28 @@ const randomString = require('randomstring')
 class AuthController {
   async authRegister(req, res) {
     try {
-      const { username, email, password, roles } = req.body;
-      const data = {
-        usernameData: JSON.parse(username),
-        emailData: JSON.parse(email),
-        passwordData: JSON.parse(password),
-        rolesData: JSON.parse(roles)
-      };
-      console.log(data);
-      const {usernameData, emailData, passwordData, rolesData} = data;
+      const { username, email, password } = req.body;
+      let roles = JSON.parse(req.body.roles)
+      console.log(req.body);
 
-      if (await Users.findOne({ where: { username: usernameData } })) {
-        res.status(201).json({ message: `El usuario ${usernameData} ya existe` })
+      if (await Users.findOne({ where: { username } })) {
+        res.status(201).json({ message: `El usuario ${username} ya existe` })
       }
       const filePath = `${randomString.generate()}/${req.file.filename}`
       console.log(filePath);
-      const hashPassword = await bcrypt.hash(passwordData, 10);
+      const hashPassword = await bcrypt.hash(password, 10);
       await Users.create({
-        username: usernameData,
-        email: emailData,
+        username,
+        email,
         password: hashPassword,
         filePath
       })
         .then((user) => {
-          if (rolesData) {
+          if (roles) {
             Role.findAll({
               where: {
                 name: {
-                  [Op.or]: rolesData
+                  [Op.or]: roles
                 }
               }
             }).then(roles => {
