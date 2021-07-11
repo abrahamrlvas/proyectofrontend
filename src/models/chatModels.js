@@ -9,6 +9,9 @@ const Message = db.define("messages", {
   message: {
     type: Sequelize.STRING,
   },
+  createdAt: {
+    type: Sequelize.DATE,
+  },
 });
 
 module.exports = Message;

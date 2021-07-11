@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const database = require('./settings/databaseConnection');
 const authRoute = require('./routes/auth.routes');
+const messageRoute = require('./routes/messages.routes');
 const Message = require('./models/chatModels');
 const randomString = require('randomstring');
 
@@ -22,6 +23,7 @@ app.use(cors({
 }));
 
 app.use('/auth', authRoute);
+app.use('/api', messageRoute);
 
 const server = app.listen(port, async () => {
   try {
@@ -58,6 +60,7 @@ io.on('connection', socket => {
       id: randomString.generate(),
       message: msg._value,
       userId,
+      createdAt: new Date()
     }).then().catch(e => console.log(e))
     socket.broadcast.emit('message', {msg: msg._value, user: username})
     socket.emit('message', {msg: msg._value, user: username})
