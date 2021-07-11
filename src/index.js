@@ -59,6 +59,7 @@ io.on('connection', socket => {
       message: msg._value,
       userId,
     }).then().catch(e => console.log(e))
+    socket.broadcast.emit('message', msg._value)
     socket.emit('message', msg._value)
   })
 
