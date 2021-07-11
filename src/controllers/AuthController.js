@@ -14,7 +14,7 @@ class AuthController {
       if (await Users.findOne({ where: { username } })) {
         res.status(201).json({ message: `El usuario ${username} ya existe` })
       }
-      const filePath = `${randomString.generate()}/${req.file.filename}`
+      const filePath = `${req.file.destination}/${req.file.filename}`
       console.log(filePath);
       const hashPassword = await bcrypt.hash(password, 10);
       await Users.create({
