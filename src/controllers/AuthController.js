@@ -3,6 +3,7 @@ const Role = require('../models/rolesModels');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Op } = require('sequelize');
+const randomString = require('randomstring')
 
 class AuthController {
   async authRegister(req, res) {
@@ -11,11 +12,13 @@ class AuthController {
       if (await Users.findOne({ where: { username } })) {
         res.status(201).json({ message: `El usuario ${username} ya existe` })
       }
+      const filePath = `${randomString.generate()}/${req.file.filename}`
       const hashPassword = await bcrypt.hash(password, 10);
       await Users.create({
         username,
         email,
         password: hashPassword,
+        filePath
       })
         .then((user) => {
           if (req.body.roles) {
@@ -33,7 +36,7 @@ class AuthController {
           } else {
             // user role = 1
             user.setRoles([1]).then(() => {
-              res.send({ message: "User was registered successfully!" });
+              res.send({ message: "User was registered successfully!", user });
             });
           }
         })

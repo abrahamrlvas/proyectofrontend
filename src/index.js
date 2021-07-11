@@ -7,10 +7,7 @@ const database = require('./settings/databaseConnection');
 const authRoute = require('./routes/auth.routes');
 const messageRoute = require('./routes/messages.routes');
 const Message = require('./models/chatModels');
-const Avatar = require('./models/avatarModel');
 const randomString = require('randomstring');
-const multer = require('multer');
-const { use } = require('./routes/auth.routes');
 
 dotenv.config();
 const app = express();
@@ -24,25 +21,6 @@ app.use(cors({
   methods: ['GET', 'POST', 'DELETE', 'PUT'],
   credentials: true
 }));
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, './src/uploads')
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname)
-  }
-})
-
-app.post('/upload/:userId', multer({ storage }).single('file'), async (req, res) => {
-  const {userId} = req.params;
-  console.log(userId);
-  console.log(req.file.destination);
-  console.log(req.file.filename);
-  const filePath = `${randomString.generate()}/${req.file.filename}`
-  const Avatars = await Avatar.create({ id: randomString.generate(), filePath, userId: userId })
-  res.json(Avatars)
-})
 
 app.use('/auth', authRoute);
 app.use('/api', messageRoute);

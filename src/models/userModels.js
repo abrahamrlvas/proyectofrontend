@@ -18,6 +18,9 @@ const Users = db.define("users", {
   password: {
     type: Sequelize.STRING,
   },
+  filePath: {
+    type: Sequelize.STRING,
+  }
 });
 
 Roles.belongsToMany(Users, {
