@@ -8,37 +8,45 @@ const randomString = require('randomstring')
 class AuthController {
   async authRegister(req, res) {
     try {
-      const { username, email, password } = req.body;
-      console.log(req.body);
-      if (await Users.findOne({ where: { username } })) {
-        res.status(201).json({ message: `El usuario ${username} ya existe` })
+      const { username, email, password, roles } = req.body;
+      const data = {
+        usernameData: JSON.parse(username),
+        emailData: JSON.parse(email),
+        passwordData: JSON.parse(password),
+        rolesData: JSON.parse(roles)
+      };
+      console.log(data);
+      const {usernameData, emailData, passwordData, rolesData} = data;
+
+      if (await Users.findOne({ where: { username: usernameData } })) {
+        res.status(201).json({ message: `El usuario ${usernameData} ya existe` })
       }
       const filePath = `${randomString.generate()}/${req.file.filename}`
       console.log(filePath);
-      const hashPassword = await bcrypt.hash(password, 10);
+      const hashPassword = await bcrypt.hash(passwordData, 10);
       await Users.create({
-        username,
-        email,
+        username: usernameData,
+        email: emailData,
         password: hashPassword,
         filePath
       })
         .then((user) => {
-          if (req.body.roles) {
+          if (rolesData) {
             Role.findAll({
               where: {
                 name: {
-                  [Op.or]: req.body.roles
+                  [Op.or]: rolesData
                 }
               }
             }).then(roles => {
               user.setRoles(roles).then(() => {
-                res.send({ message: "User was registered successfully!" });
+                res.status(200).send({ message: "User was registered successfully!", user });
               });
             });
           } else {
             // user role = 1
             user.setRoles([1]).then(() => {
-              res.send({ message: "User was registered successfully!", user });
+              res.status(200).send({ message: "User was registered successfully!", user });
             });
           }
         })
