@@ -52,19 +52,15 @@ io.on('connection', socket => {
   });
   
   // Cambio nuevo
-  socket.on('message', ({msg, userId}) => {
+  socket.on('message', ({msg, userId, username}) => {
     console.log(msg, userId);
     Message.create({
       id: randomString.generate(),
       message: msg._value,
       userId,
     }).then().catch(e => console.log(e))
-    socket.broadcast.emit('message', msg._value)
-    socket.emit('message', msg._value)
-  })
-
-  socket.on('username', user => {
-    socket.emit('username', user)
+    socket.broadcast.emit('message', {msg: msg._value, user: username})
+    socket.emit('message', {msg: msg._value, user: username})
   })
 
   socket.on('disconnect', (reason) => {
