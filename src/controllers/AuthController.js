@@ -3,7 +3,6 @@ const Role = require('../models/rolesModels');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Op } = require('sequelize');
-const randomString = require('randomstring')
 
 class AuthController {
   async authRegister(req, res) {
@@ -70,7 +69,8 @@ class AuthController {
               token = jwt.sign({
                 userId: user.id,
                 username: user.username,
-                email: user.email
+                email: user.email,
+                avatar: user.filePath 
               }, process.env.AUTH_SECRET, {
                 expiresIn: process.env.AUTH_EXPIRE
               })
