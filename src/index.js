@@ -60,8 +60,8 @@ io.on('connection', (socket) => {
       userId,
       createdAt: new Date()
     }).then().catch(e => console.log(e))
-    socket.broadcast.emit('message', {msg: msg._value, user: username})
-    socket.emit('message', {msg: msg._value, user: username})
+    socket.broadcast.emit('message', {msg: msg._value, user: username, createdAt: new Date()})
+    socket.emit('message', {msg: msg._value, user: username, createdAt: new Date()})
   })
 
   socket.emit('userActive', io.engine.clientsCount)
