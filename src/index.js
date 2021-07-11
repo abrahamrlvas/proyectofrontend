@@ -50,17 +50,16 @@ io.on('connection', socket => {
   socket.on('join', data => {
     console.log(data);
   });
-
-  socket.on('message', ({_value}) => {
-    console.log(_value);
-    socket.on('user', async (user) => {
-      await Message.create({
-        id: randomString.generate(),
-        message: _value,
-        userId: user
-      }).then().catch(e => console.log(e))
-      socket.emit('message', _value)
-    })
+  
+  // Cambio nuevo
+  socket.on('message', ({msg, userId}) => {
+    console.log(msg, userId);
+    Message.create({
+      id: randomString.generate(),
+      message: msg._value,
+      userId,
+    }).then().catch(e => console.log(e))
+    socket.emit('message', msg._value)
   })
 
   socket.on('username', user => {
