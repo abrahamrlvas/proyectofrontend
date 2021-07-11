@@ -6,7 +6,7 @@ const isAdmin = require('../middlewares/adminRoles')
 const multer = require('multer');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, './src/uploads')
+    cb(null, 'public/uploads')
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname)
