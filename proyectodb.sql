@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 05-07-2021 a las 05:16:50
+-- Tiempo de generación: 12-07-2021 a las 17:23:15
 -- Versión del servidor: 10.4.19-MariaDB
 -- Versión de PHP: 8.0.6
 
@@ -20,6 +20,22 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `proyectodb`
 --
+CREATE DATABASE proyectodb;
+
+USE proyectodb;
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `messages`
+--
+
+CREATE TABLE `messages` (
+  `id` varchar(255) NOT NULL,
+  `message` varchar(255) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `userId` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -49,10 +65,11 @@ INSERT INTO `roles` (`id`, `name`) VALUES
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `username` varchar(255) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `email` varchar(255) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `password` varchar(255) COLLATE utf8_spanish_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+  `username` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `filePath` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -63,11 +80,18 @@ CREATE TABLE `users` (
 CREATE TABLE `user_roles` (
   `roleId` int(11) NOT NULL,
   `userId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Índices para tablas volcadas
 --
+
+--
+-- Indices de la tabla `messages`
+--
+ALTER TABLE `messages`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `userId` (`userId`);
 
 --
 -- Indices de la tabla `roles`
@@ -101,6 +125,12 @@ ALTER TABLE `users`
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `messages`
+--
+ALTER TABLE `messages`
+  ADD CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `user_roles`
