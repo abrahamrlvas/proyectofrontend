@@ -1,10 +1,12 @@
-const User = require('../models/userModels');
+const User = require("../models/userModels");
 
 class Users {
-  async getUsersAll(req, res){
+  async getUsersAll(req, res) {
     const user = await User.findAll();
-    res.json(user)
+    res
+      .status(200)
+      .json(user);
   }
-}
+};
 
 module.exports = new Users();

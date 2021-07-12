@@ -1,16 +1,18 @@
-const Message = require('../models/chatModels');
+const Message = require("../models/chatModels");
 
 class MessageController {
-  async getMessage(req, res){
+  async getMessage(req, res) {
     const messages = await Message.findAll({
       include: [
         {
-          association: Message.Users
-        }
+          association: Message.Users,
+        },
       ],
-      order: [['createdAt', 'ASC']]
-    })
-    res.json(messages)
+      order: [["createdAt", "ASC"]],
+    });
+    res
+      .status(200)
+      .json(messages);
   }
 }
 

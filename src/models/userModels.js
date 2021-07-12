@@ -20,21 +20,21 @@ const Users = db.define("users", {
   },
   filePath: {
     type: Sequelize.STRING,
-  }
+  },
 });
 
 Roles.belongsToMany(Users, {
   through: "user_roles",
   foreignKey: "roleId",
-  otherKey: "userId"
+  otherKey: "userId",
 });
 
 Users.belongsToMany(Roles, {
   through: "user_roles",
   foreignKey: "userId",
-  otherKey: "roleId"
+  otherKey: "roleId",
 });
 
-Message.Users = Message.belongsTo(Users)
+Message.Users = Message.belongsTo(Users);
 
 module.exports = Users;
