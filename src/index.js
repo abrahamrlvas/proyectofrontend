@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const database = require('./settings/databaseConnection');
 const authRoute = require('./routes/auth.routes');
+const userRoute = require('./routes/user.routes');
 const messageRoute = require('./routes/messages.routes');
 const Message = require('./models/chatModels');
 const randomString = require('randomstring');
@@ -25,6 +26,7 @@ app.use(cors({
 
 app.use('/auth', authRoute);
 app.use('/api', messageRoute);
+app.use('/api', userRoute);
 
 const server = app.listen(port, async () => {
   try {
@@ -61,13 +63,10 @@ io.on('connection', (socket) => {
       userId,        
       createdAt: new Date(),
       updatedAt: new Date()
-    }).then(message => {
-      const { createdAt } = message;
-      socket.broadcast.emit('message', {msg: msg._value, user: username, avatar, createdAt})
-      socket.emit('message', {msg: msg._value, user: username, avatar, createdAt})
-    })
+    }).then()
       .catch(e => console.log(e))
-
+      socket.broadcast.emit('message', {msg: msg._value, user: username, avatar, createdAt:new Date()})
+      socket.emit('message', {msg: msg._value, user: username, avatar, createdAt:new Date()})
   })
 
   socket.emit('userActive', io.engine.clientsCount)
