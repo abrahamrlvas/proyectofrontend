@@ -58,11 +58,16 @@ io.on('connection', (socket) => {
     Message.create({
       id: randomString.generate(),
       message: msg._value,
-      userId,
-      createdAt: new Date()
-    }).then().catch(e => console.log(e))
-    socket.broadcast.emit('message', {msg: msg._value, user: username, createdAt: new Date(), avatar})
-    socket.emit('message', {msg: msg._value, user: username, createdAt: new Date(), avatar})
+      userId,        
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }).then(message => {
+      const { createdAt } = message;
+      socket.broadcast.emit('message', {msg: msg._value, user: username, avatar, createdAt})
+      socket.emit('message', {msg: msg._value, user: username, avatar, createdAt})
+    })
+      .catch(e => console.log(e))
+
   })
 
   socket.emit('userActive', io.engine.clientsCount)

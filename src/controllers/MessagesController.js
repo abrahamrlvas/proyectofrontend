@@ -7,7 +7,8 @@ class MessageController {
         {
           association: Message.Users
         }
-      ]
+      ],
+      order: [['createdAt', 'ASC']]
     })
     res.json(messages)
   }
