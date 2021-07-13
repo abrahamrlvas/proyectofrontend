@@ -3,6 +3,7 @@ const socketIO = require("socket.io");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const cors = require("cors");
+const path = require('path');
 const database = require("./settings/databaseConnection");
 const authRoute = require("./routes/auth.routes");
 const userRoute = require("./routes/user.routes");
@@ -94,3 +95,9 @@ io.on("connection", (socket) => {
     console.log("User disconnect");
   });
 });
+
+app.use(express.static(path.join(__dirname, '../public/dist/spa')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/dist/spa/index.html'))
+})
