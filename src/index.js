@@ -59,8 +59,9 @@ const io = socketIO(server, {
 
 io.on("connection", (socket) => {
   console.log("New connection");
-  socket.on("join", ({room}) => {
-    socket.join(room)
+  socket.on("join", (room) => {
+    console.log(room);
+    socket.join(room.name)
     socket.on("message", ({ msg, userId, username, avatar }) => {
       console.log(userId);
       console.log(username);
@@ -73,13 +74,13 @@ io.on("connection", (socket) => {
       })
         .then()
         .catch((e) => console.log(e));
-      socket.to(room).broadcast.emit("message", {
+      socket.to(room.name).broadcast.emit("message", {
         msg: msg._value,
         user: username,
         avatar,
         createdAt: new Date(),
       });
-      socket.to(room).emit("message", {
+      socket.to(room.name).emit("message", {
         msg: msg._value,
         user: username,
         avatar,
