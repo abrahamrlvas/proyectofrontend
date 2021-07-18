@@ -60,36 +60,34 @@ io.on("connection", (socket) => {
   console.log("New connection");
   socket.on("join", (data) => {
     console.log(data);
-  });
-
-  // Cambio nuevo
-  socket.on("message", ({ msg, userId, username, avatar }) => {
-    console.log(userId);
-    console.log(username);
-    Message.create({
-      id: randomString.generate(),
-      message: msg._value,
-      userId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    })
-      .then()
-      .catch((e) => console.log(e));
-    socket.broadcast.emit("message", {
-      msg: msg._value,
-      user: username,
-      avatar,
-      createdAt: new Date(),
+    socket.on("message", ({ msg, userId, username, avatar }) => {
+      console.log(userId);
+      console.log(username);
+      Message.create({
+        id: randomString.generate(),
+        message: msg._value,
+        userId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+        .then()
+        .catch((e) => console.log(e));
+      socket.broadcast.emit("message", {
+        msg: msg._value,
+        user: username,
+        avatar,
+        createdAt: new Date(),
+      });
+      socket.emit("message", {
+        msg: msg._value,
+        user: username,
+        avatar,
+        createdAt: new Date(),
+      });
     });
-    socket.emit("message", {
-      msg: msg._value,
-      user: username,
-      avatar,
-      createdAt: new Date(),
-    });
+  
+    socket.emit("userActive", io.engine.clientsCount);
   });
-
-  socket.emit("userActive", io.engine.clientsCount);
 
   socket.on("disconnect", (reason) => {
     console.log("User disconnect");
