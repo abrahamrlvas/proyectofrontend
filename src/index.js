@@ -116,7 +116,7 @@ io.on("connection", (socket) => {
       // });
     });
   
-    socket.emit("userActive", io.engine.clientsCount);
+    socket.emit("userCount", io.engine.clientsCount);
   // });
 
   socket.on("disconnect", (reason) => {
