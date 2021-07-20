@@ -56,40 +56,55 @@ const io = socketIO(server, {
   },
 });
 
+const users = [];
+
 
 io.on("connection", (socket) => {
-  console.log("New connection");
-  socket.on("join", (room) => {
-    console.log(room);
-    socket.join(room)
-    socket.on("message", ({ msg, userId, username, avatar }) => {
-      console.log(userId);
-      console.log(username);
-      Message.create({
-        id: randomString.generate(),
-        message: msg._value,
-        userId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
-        .then()
-        .catch((e) => console.log(e));
-      socket.broadcast.to(room).emit("message", {
-        msg: msg._value,
-        user: username,
-        avatar,
-        createdAt: new Date(),
-      });
-      socket.to(room).emit("message", {
-        msg: msg._value,
-        user: username,
-        avatar,
-        createdAt: new Date(),
-      });
+  console.log("New connection", socket.id);
+  // socket.on("join", (room) => {
+    // console.log(room);
+    // socket.join(room)
+
+    socket.on("userActive", function ({avatar, username}) {
+      users[username] = socket.id
+      io.emit('userActive', {avatar, username})
+    });
+
+    socket.on("message", ({ msg, userId, username, avatar, to }) => {
+      console.log(userId, 'userID on message');
+      console.log(username, 'username on message');
+      var socketId = users[to]
+      io.to(socketId).emit("message", {
+          msg: msg._value,
+          user: username,
+          avatar,
+          createdAt: new Date(),
+        })
+      // Message.create({
+      //   id: randomString.generate(),
+      //   message: msg._value,
+      //   userId,
+      //   createdAt: new Date(),
+      //   updatedAt: new Date(),
+      // })
+      //   .then()
+      //   .catch((e) => console.log(e));
+      // socket.broadcast.emit("message", {
+      //   msg: msg._value,
+      //   user: username,
+      //   avatar,
+      //   createdAt: new Date(),
+      // });
+      // socket.emit("message", {
+      //   msg: msg._value,
+      //   user: username,
+      //   avatar,
+      //   createdAt: new Date(),
+      // });
     });
   
     socket.emit("userActive", io.engine.clientsCount);
-  });
+  // });
 
   socket.on("disconnect", (reason) => {
     console.log("User disconnect");
