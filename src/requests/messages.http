@@ -1,3 +1,8 @@
 ### Buscar todos los mensajes
-GET http://localhost:3000/api/messages
+POST http://localhost:3000/api/message
 Content-Type: application/json
+
+{
+  "receiver": "test",
+  "sender": "abraham"
+}

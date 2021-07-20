@@ -14,6 +14,18 @@ class MessageController {
       .status(200)
       .json(messages);
   }
+
+  async getMessagePrivate(req, res) {
+    const { receiver, sender } = req.body
+    console.log(req.body);
+    const messages = await Message.findAll({
+      where: {
+        receiver,
+        sender
+      }
+    })
+    res.json(messages)
+  }
 }
 
 module.exports = new MessageController();
