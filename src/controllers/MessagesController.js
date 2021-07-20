@@ -1,4 +1,5 @@
 const Message = require("../models/chatModels");
+const { Op } = require("sequelize");
 
 class MessageController {
   async getMessage(req, res) {
@@ -17,14 +18,21 @@ class MessageController {
 
   async getMessagePrivate(req, res) {
     const { receiver, sender } = req.body
-    console.log(req.body);
-    const messages = await Message.findAll({
-      where: {
-        receiver,
-        sender
-      }
-    })
-    res.json(messages)
+    try {
+      const messages = await Message.findAll({
+        where: {
+          receiver: {
+            [Op.or]: [receiver, sender]
+          },
+          sender: {
+            [Op.or]: [sender, receiver]
+          }
+        }
+      })
+      res.json(messages)
+    } catch (error) {  
+      console.log(error);
+    }
   }
 }
 
