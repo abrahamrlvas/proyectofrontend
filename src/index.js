@@ -73,7 +73,20 @@ io.on("connection", (socket) => {
     socket.on("message", ({ msg, userId, username, avatar, to }) => {
       console.log(userId, 'userID on message');
       console.log(username, 'username on message');
+      console.log(to, 'user emit');
       var socketId = users[to]
+      console.log(socketId);
+      Message.create({
+        id: randomString.generate(),
+        message: msg._value,
+        userId,
+        receiver: to,
+        sender: username,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        })
+        .then()
+        .catch((e) => console.log(e));
       io.to(socketId).emit("message", {
           msg: msg._value,
           user: username,

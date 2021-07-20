@@ -9,6 +9,12 @@ const Message = db.define("messages", {
   message: {
     type: Sequelize.STRING,
   },
+  receiver: {
+    type: Sequelize.STRING,
+  },
+  sender: {
+    type: Sequelize.STRING,
+  },
   createdAt: {
     field: "created_at",
     type: Sequelize.DATE,
