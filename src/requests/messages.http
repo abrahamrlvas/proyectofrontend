@@ -6,3 +6,11 @@ Content-Type: application/json
   "receiver": "test",
   "sender": "abraham"
 }
+### Buscar conversaciones
+POST http://localhost:3000/api/conversation
+Content-Type: application/json
+
+{
+  "username": "abraham"
+}
+
