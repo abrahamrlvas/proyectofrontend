@@ -35,7 +35,7 @@ class MessageController {
 
   async getFindMessage(req, res) {
     const { receiver, sender } = req.body
-    const message = await Message.findOne({
+    await Message.findOne({
       limit: 1,
       where: {
         receiver: {
@@ -46,8 +46,7 @@ class MessageController {
         },
       },
       order: [["createdAt", "DESC"]],
-    });
-    res.json(message)
+    })
   }
 }
 

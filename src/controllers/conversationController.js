@@ -1,5 +1,6 @@
 const Conversation = require("../models/conversationModels");
 const User = require("../models/userModels");
+const Message = require("../models/chatModels");
 const { Op } = require("sequelize");
 
 class ConversationController {
@@ -33,18 +34,29 @@ class ConversationController {
         personSen: username
       }
     }).then(async (data) => {
-      console.log(data[0].personSen);
-      console.log('data', data[0].personTo)
-      console.log('data', data[0].personSen)
-      const users = await User.findAll({
+       await User.findAll({
         where:{
           username: {
             [Op.or]: [data[0].personSen, data[0].personTo]
           }
         }
+      }).then(async (users) => {
+        const messageTime = await Message.findOne({
+          limit: 1,
+          where: {
+            receiver: {
+              [Op.or]: [data[0].personSen, data[0].personTo],
+            },
+            sender: {
+              [Op.or]: [data[0].personSen, data[0].personTo],
+            },
+          },
+          order: [["createdAt", "DESC"]],
+        })
+        res.json({data, users, messageTime})
       })
-      res.json({ data, users })
     })
+
   }
 }
 
