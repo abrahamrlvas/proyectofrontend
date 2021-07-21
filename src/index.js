@@ -9,6 +9,7 @@ const authRoute = require("./routes/auth.routes");
 const userRoute = require("./routes/user.routes");
 const messageRoute = require("./routes/messages.routes");
 const Message = require("./models/chatModels");
+const conversation = require('./controllers/conversationController')
 const randomString = require("randomstring");
 
 //Configuración
@@ -75,7 +76,8 @@ io.on("connection", (socket) => {
       console.log(username, 'username on message');
       console.log(to, 'user emit');
       var socketId = users[to]
-      console.log(socketId);
+      const data = conversation.createConversation(randomString.generate(), to, username)
+      console.log(data);
       Message.create({
         id: randomString.generate(),
         message: msg._value,
