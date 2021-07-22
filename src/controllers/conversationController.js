@@ -5,16 +5,13 @@ const { Op } = require("sequelize");
 
 class ConversationController {
   async createConversation(id, to, sen) {
-    console.log('recibido id', id);
-    console.log(to);
-    console.log(sen);
     const search = await Conversation.findAll({
       where: {
         personTo: to,
-        personSen: sen
+        personSen: sen,
       },
     });
-    const data = search.length < 1
+    const data = search.length < 1;
     if (data) {
       const conversation = await Conversation.create({
         id,
@@ -31,15 +28,15 @@ class ConversationController {
     const { username } = req.body;
     await Conversation.findAll({
       where: {
-        personSen: username
-      }
+        personSen: username,
+      },
     }).then(async (data) => {
-       await User.findAll({
-        where:{
+      await User.findAll({
+        where: {
           username: {
-            [Op.or]: [data[0].personSen, data[0].personTo]
-          }
-        }
+            [Op.or]: [data[0].personSen, data[0].personTo],
+          },
+        },
       }).then(async (users) => {
         const messageTime = await Message.findOne({
           limit: 1,
@@ -52,11 +49,10 @@ class ConversationController {
             },
           },
           order: [["createdAt", "DESC"]],
-        })
-        res.json({data, users, messageTime})
-      })
-    })
-
+        });
+        res.json({ data, users, messageTime });
+      });
+    });
   }
 }
 

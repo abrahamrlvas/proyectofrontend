@@ -5,13 +5,11 @@ class Users {
     const { username } = req.body;
     const user = await User.findAll({
       where: {
-        username
-      }
+        username,
+      },
     });
-    res
-      .status(200)
-      .json(user);
+    res.status(200).json(user);
   }
-};
+}
 
 module.exports = new Users();
