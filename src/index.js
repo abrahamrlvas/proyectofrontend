@@ -3,12 +3,13 @@ const socketIO = require("socket.io");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const cors = require("cors");
-const path = require('path');
+const path = require("path");
 const database = require("./settings/databaseConnection");
 const authRoute = require("./routes/auth.routes");
 const userRoute = require("./routes/user.routes");
 const messageRoute = require("./routes/messages.routes");
 const Message = require("./models/chatModels");
+const conversation = require("./controllers/conversationController");
 const randomString = require("randomstring");
 
 //Configuración
@@ -56,48 +57,79 @@ const io = socketIO(server, {
   },
 });
 
+const users = [];
+
 io.on("connection", (socket) => {
-  console.log("New connection");
-  socket.on("join", (data) => {
-    console.log(data);
+  console.log("New connection", socket.id);
+  // socket.on("join", (room) => {
+  // console.log(room);
+  // socket.join(room)
+
+  socket.on("userActive", function ({ avatar, username }) {
+    users[username] = socket.id;
+    io.emit("userActive", { avatar, username });
   });
 
-  // Cambio nuevo
-  socket.on("message", ({ msg, userId, username, avatar }) => {
-    console.log(userId);
-    console.log(username);
+  socket.on("message", ({ msg, userId, username, avatar, to }) => {
+    console.log(userId, "userID on message");
+    console.log(username, "username on message");
+    console.log(to, "user emit");
+    var socketId = users[to];
+    conversation.createConversation(
+      randomString.generate(),
+      to,
+      username
+    );
     Message.create({
       id: randomString.generate(),
       message: msg._value,
       userId,
+      receiver: to,
+      sender: username,
       createdAt: new Date(),
       updatedAt: new Date(),
     })
       .then()
       .catch((e) => console.log(e));
-    socket.broadcast.emit("message", {
+    io.to(socketId).emit("message", {
       msg: msg._value,
       user: username,
       avatar,
       createdAt: new Date(),
     });
-    socket.emit("message", {
-      msg: msg._value,
-      user: username,
-      avatar,
-      createdAt: new Date(),
-    });
+    // Message.create({
+    //   id: randomString.generate(),
+    //   message: msg._value,
+    //   userId,
+    //   createdAt: new Date(),
+    //   updatedAt: new Date(),
+    // })
+    //   .then()
+    //   .catch((e) => console.log(e));
+    // socket.broadcast.emit("message", {
+    //   msg: msg._value,
+    //   user: username,
+    //   avatar,
+    //   createdAt: new Date(),
+    // });
+    // socket.emit("message", {
+    //   msg: msg._value,
+    //   user: username,
+    //   avatar,
+    //   createdAt: new Date(),
+    // });
   });
 
-  socket.emit("userActive", io.engine.clientsCount);
+  socket.emit("userCount", io.engine.clientsCount);
+  // });
 
   socket.on("disconnect", (reason) => {
     console.log("User disconnect");
   });
 });
 
-app.use(express.static(path.join(__dirname, '../public/dist/spa')));
+app.use(express.static(path.join(__dirname, "../public/dist/spa")));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/dist/spa/index.html'))
-})
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/dist/spa/index.html"));
+});

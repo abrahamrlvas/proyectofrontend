@@ -1,18 +1,15 @@
 const Sequelize = require("sequelize");
 const db = require("../settings/databaseConnection");
 
-const Message = db.define("messages", {
+const Conversation = db.define("conversations", {
   id: {
     type: Sequelize.STRING,
     primaryKey: true,
   },
-  message: {
+  personSen: {
     type: Sequelize.STRING,
   },
-  receiver: {
-    type: Sequelize.STRING,
-  },
-  sender: {
+  personTo: {
     type: Sequelize.STRING,
   },
   createdAt: {
@@ -25,4 +22,4 @@ const Message = db.define("messages", {
   },
 });
 
-module.exports = Message;
+module.exports = Conversation;
