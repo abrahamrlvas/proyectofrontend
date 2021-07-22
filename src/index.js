@@ -75,11 +75,7 @@ io.on("connection", (socket) => {
     console.log(username, "username on message");
     console.log(to, "user emit");
     var socketId = users[to];
-    conversation.createConversation(
-      randomString.generate(),
-      to,
-      username
-    );
+    conversation.createConversation(randomString.generate(), to, username);
     Message.create({
       id: randomString.generate(),
       message: msg._value,
@@ -97,6 +93,11 @@ io.on("connection", (socket) => {
       avatar,
       createdAt: new Date(),
     });
+
+    socket.on("radio", function (blob) {
+      socket.broadcast.to(room).emit("voice", blob);
+    });
+    
     // Message.create({
     //   id: randomString.generate(),
     //   message: msg._value,
