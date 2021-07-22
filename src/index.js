@@ -95,9 +95,9 @@ io.on("connection", (socket) => {
     });
 
     socket.on("radio", function (blob) {
-      socket.broadcast.to(room).emit("voice", blob);
+      socket.broadcast.emit("voice", blob);
     });
-    
+
     // Message.create({
     //   id: randomString.generate(),
     //   message: msg._value,
