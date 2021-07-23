@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.0
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 12-07-2021 a las 17:23:15
--- Versión del servidor: 10.4.19-MariaDB
--- Versión de PHP: 8.0.6
+-- Servidor: localhost
+-- Tiempo de generación: 23-07-2021 a las 02:34:15
+-- Versión del servidor: 10.4.20-MariaDB
+-- Versión de PHP: 8.0.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -26,12 +26,28 @@ USE proyectodb;
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `conversations`
+--
+
+CREATE TABLE `conversations` (
+  `id` varchar(255) NOT NULL,
+  `personSen` varchar(255) DEFAULT NULL,
+  `personTo` varchar(255) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `messages`
 --
 
 CREATE TABLE `messages` (
   `id` varchar(255) NOT NULL,
   `message` varchar(255) DEFAULT NULL,
+  `receiver` varchar(255) DEFAULT NULL,
+  `sender` varchar(255) DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `userId` int(11) DEFAULT NULL
@@ -85,6 +101,12 @@ CREATE TABLE `user_roles` (
 --
 -- Índices para tablas volcadas
 --
+
+--
+-- Indices de la tabla `conversations`
+--
+ALTER TABLE `conversations`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `messages`
